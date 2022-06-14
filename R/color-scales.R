@@ -32,15 +32,13 @@ scale_colour_nces <- function(..., type = "seq", palette = 1, direction = 1, aes
 #' dframe %>%
 #'   ggplot(aes(x = x, fill=factor(x))) +
 #'   geom_bar() +
-#'   scale_fill_nces()
+#'   scale_fill_nces() +
+#'   theme_bw()
 scale_fill_nces <- function(..., type = "seq", palette = 1, direction = -1, aesthetics = "fill") {
   ggplot2::discrete_scale(aesthetics, "nces", nces_pal(type, palette, direction), ...)
 }
 
 choose_n <- function(colors, n, type) {
-  print(n)
-  print(type)
-
   pal <- colors
   if (n > length(colors)) {
     warning(sprintf("chosen color palette only has %d colors.", length(colors)))
