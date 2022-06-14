@@ -48,6 +48,15 @@ statesmaps <- states_one %>% left_join(hex_one %>% select(id, hexagon), by=c("st
 statesmaps <- statesmaps %>%
   dplyr::select(state_name, state_abbv, state_fips, piece, hole, group, polygon, hexagon)
 
+
+statesmaps <- statesmaps %>%
+  mutate(
+    piece = as.numeric(piece),
+    group = factor(group),
+    group = reorder(group, piece, FUN = function(x) mean(-x))
+  )
+
+
 usethis::use_data(statesmaps, overwrite=TRUE)
 #sf::st_centroid(states_sf$geometry)
 
@@ -73,8 +82,15 @@ age10 <- get_decennial(geography = "state",
                        year = 2010)
 map_values <- statesmaps %>% left_join(age10, by = c("state_name" = "NAME"))
 
-
-
+# library(tidycensus)
+# library(tidyverse)
+# options(tigris_use_cache = TRUE)
+#
+#
+# age10 <- get_decennial(geography = "state",
+#                        variables = "P013001",
+#                        year = 2010, geometry = TRUE, shift_geo = TRUE)
+# age10 %>% ggplot(aes(fill=variable)) + geom_sf()
 
 map_values %>% unnest(col=hexagon) %>%
   ggplot(aes( x = long, y = lat, group = group, fill=value)) +
@@ -97,7 +113,7 @@ map_values %>% unnest(col=polygon) %>%
 plotly::ggplotly()
 
 
-map_values %>% pivot_longer(polygon:hexagon, values_to="data", names_to = "type") %>%
+p <- map_values %>% pivot_longer(polygon:hexagon, values_to="data", names_to = "type") %>%
   tidyr::unnest(col = data) %>%
   ggplot(aes(x = long, y = lat, group = group, fill=value)) +
   #  geom_polygon(colour="grey70") +
@@ -107,3 +123,12 @@ map_values %>% pivot_longer(polygon:hexagon, values_to="data", names_to = "type"
   scale_fill_gradient2("Median Age", midpoint=median(age10$value)) +
   coord_map()
 
+
+library(gganimate)
+
+anim <- p +
+  transition_states(type,
+                    transition_length = 2,
+                    state_length = 1)
+
+anim

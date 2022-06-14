@@ -34,13 +34,55 @@ This is a basic example which shows you how to solve a common problem:
 
 ```{r example}
 library(handbook)
+library(tidyverse)
+
 ## basic example code
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
+### Color schemes
 
-```{r cars}
-summary(cars)
+### Maps
+
+The `statesmaps` object consists of polygons and hex shapes describing each state. Additionally, state names, abbreviations and fips codes are provided for linkage with data sources.
+
+```{r maps}
+head(statesmaps)
+```
+As an example to acquire data from the US Census Bureau we can use the code below, thanks to Kyle Walker's amazing [tidycensus](https://walker-data.com/tidycensus/articles/basic-usage.html) package:
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+census_key <- "place your API key here"
+census_key <- "7f784587c3918611ad6ca67188d9b269b3558dd4"
+census_api_key(census_key)
+
+# H012001 encodes the average houshold size
+hh10 <- get_decennial(geography = "state",
+                       variables = "H012001",
+                       year = 2010)
+map_values <- statesmaps %>% left_join(hh10, by = c("state_name" = "NAME"))
 ```
 
+Once the data is joined with the mapping information, we can draw choropleth maps or hexbin maps:
 
+```{r}
+map_values %>% unnest(col=polygon) %>%
+  ggplot(aes( x = long, y = lat, group = group, fill=value)) +
+  geom_polygon(colour = "grey50", size=0.1) +
+  #  geom_text (aes(label=id)) +
+  theme_void () +
+  coord_map () +
+  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value))
+```
+
+Note that only in the hexbin diagram we get to see the nation's territory with the smallest average household size: DC residents report in the 2010 census an average household size of 2.1 persons.
+
+```{r}
+map_values %>% unnest(col=hexagon) %>%
+  ggplot(aes( x = long, y = lat, group = group, fill=value)) +
+  geom_polygon(colour = "grey50", size=0.1) + 
+  theme_void () +
+  coord_map () +
+  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value))
+```
