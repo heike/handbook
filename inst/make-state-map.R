@@ -48,6 +48,12 @@ statesmaps <- states_one %>% left_join(hex_one %>% select(id, hexagon), by=c("st
 statesmaps <- statesmaps %>%
   dplyr::select(state_name, state_abbv, state_fips, piece, hole, group, polygon, hexagon)
 
+statesmaps <- statesmaps %>%
+  mutate(
+    hexagon_labels = hexagon %>% purrr::map(.f = function(d) {
+      data.frame(long = mean(d$long[1:6]), lat = mean(d$lat[1:6]))
+    })
+  )
 
 statesmaps <- statesmaps %>%
   mutate(
@@ -99,7 +105,9 @@ map_values %>% unnest(col=hexagon) %>%
   #  geom_text (aes(label=id)) +
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Median Age", midpoint=median(age10$value))
+  scale_fill_gradient2("Median Age", midpoint=median(age10$value)) +
+  geom_text(aes(label = state_abbv), data = map_values %>% unnest(col=hexagon_labels),
+            hjust = 0.5, vjust = 0.5)
 
 plotly::ggplotly()
 

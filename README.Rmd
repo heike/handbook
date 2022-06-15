@@ -134,12 +134,17 @@ map_values %>% unnest(col=polygon) %>%
 Note that only in the hexbin diagram we get to see the nation's territory with the smallest average household size: DC residents report in the 2010 census an average household size of 2.1 persons.
 
 ```{r}
-map_values %>% unnest(col=hexagon) %>%
+map_values %>% unnest(col=hexagon) %>% 
+  filter(piece == 1) %>%  # not necessary, but cleaner
   ggplot(aes( x = long, y = lat, group = group, fill=value)) +
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value))
+  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value)) +
+  geom_text(aes(label = state_abbv, colour = I(abs(value-2.5) < 0.25)), 
+            map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
+  scale_colour_manual(values=c("white", "grey50")) +
+  guides(colour = "none")
 ```
 
 #### Animation between hex and choropleth map

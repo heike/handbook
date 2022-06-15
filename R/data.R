@@ -10,6 +10,7 @@
 #'   \item{group}{id for the corresponding polygon piece}
 #'   \item{polygon}{list of data frames with polygon points}
 #'   \item{hexagon}{list of data frames with hexagon points}
+#'   \item{hexagon_labels}{list of data frame with centroids of the hexagons}
 #' }
 #' @source
 #'   hexbin map: \url{https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/us_states_hexgrid.geojson.json};
