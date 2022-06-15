@@ -55,7 +55,7 @@ scale_fill_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7ff639e10208>
+#> <bytecode: 0x7f9ed816e4e0>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
@@ -63,7 +63,7 @@ scale_colour_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7ff639f58470>
+#> <bytecode: 0x7f9ed82aba50>
 #> <environment: namespace:handbook>
 ```
 
@@ -152,3 +152,7 @@ map_values %>% unnest(col=hexagon) %>%
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
+
+#### Animation between hex and choropleth map
+
+<img src="inst/animation.gif" width="100%" />

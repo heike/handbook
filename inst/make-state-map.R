@@ -53,7 +53,8 @@ statesmaps <- statesmaps %>%
   mutate(
     piece = as.numeric(piece),
     group = factor(group),
-    group = reorder(group, piece, FUN = function(x) mean(-x))
+    group = reorder(group, piece, FUN = function(x) mean(x)),
+    group = factor(group, levels = rev(levels(group)))
   )
 
 

@@ -142,3 +142,8 @@ map_values %>% unnest(col=hexagon) %>%
   scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value))
 ```
 
+#### Animation between hex and choropleth map
+
+```{r, echo=FALSE}
+knitr::include_graphics("inst/animation.gif")
+```
