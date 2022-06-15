@@ -53,7 +53,7 @@ scale_fill_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_pal(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7fb367df6350>
+#> <bytecode: 0x7f996d408da0>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
@@ -61,7 +61,7 @@ scale_colour_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_pal(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7fb366b024c0>
+#> <bytecode: 0x7f995d1c3c80>
 #> <environment: namespace:handbook>
 ```
 

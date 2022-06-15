@@ -13,8 +13,8 @@ Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 Depends: 
-    R (>= 2.10),
-    ggplot2 (>= 3.3.6)
+    R (>= 2.10)
 Suggests:
-    tidyr (>= 1.2.0)
+    ggplot2 (>= 3.3.6),
+    tidyr (>= 1.2.0),
 LazyData: true
