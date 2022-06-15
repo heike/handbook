@@ -55,7 +55,7 @@ scale_fill_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7ff06f06f468>
+#> <bytecode: 0x7ff639e10208>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
@@ -63,7 +63,7 @@ scale_colour_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7ff06f1aea90>
+#> <bytecode: 0x7ff639f58470>
 #> <environment: namespace:handbook>
 ```
 
@@ -120,6 +120,13 @@ Once the data is joined with the mapping information, we can draw
 choropleth maps or hexbin maps:
 
 ``` r
+library(mapproj)
+#> Loading required package: maps
+#> 
+#> Attaching package: 'maps'
+#> The following object is masked from 'package:purrr':
+#> 
+#>     map
 map_values %>% unnest(col=polygon) %>%
   ggplot(aes( x = long, y = lat, group = group, fill=value)) +
   geom_polygon(colour = "grey50", size=0.1) +

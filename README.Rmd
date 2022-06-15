@@ -121,6 +121,7 @@ map_values <- statesmaps %>% left_join(hh10, by = c("state_name" = "NAME"))
 Once the data is joined with the mapping information, we can draw choropleth maps or hexbin maps:
 
 ```{r}
+library(mapproj)
 map_values %>% unnest(col=polygon) %>%
   ggplot(aes( x = long, y = lat, group = group, fill=value)) +
   geom_polygon(colour = "grey50", size=0.1) +
