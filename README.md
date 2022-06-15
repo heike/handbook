@@ -4,6 +4,8 @@
 # handbook
 
 <!-- badges: start -->
+
+[![R-CMD-check](https://github.com/heike/handbook/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/heike/handbook/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 The goal of the package `handbook` is to provide data for some
@@ -50,18 +52,18 @@ based on IES colors:
 scale_fill_nces
 #> function (..., type = "seq", palette = 1, direction = -1, aesthetics = "fill") 
 #> {
-#>     ggplot2::discrete_scale(aesthetics, "nces", nces_pal(type, 
+#>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7f996d408da0>
+#> <bytecode: 0x7ff06f06f468>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
 #> {
-#>     ggplot2::discrete_scale(aesthetics, "nces", nces_pal(type, 
+#>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7f995d1c3c80>
+#> <bytecode: 0x7ff06f1aea90>
 #> <environment: namespace:handbook>
 ```
 
