@@ -29,6 +29,7 @@ Maps of states: polygons and hexagons
 }
 \examples{
 library(ggplot2)
+library(mapproj)
 library(tidyr)
 statesmaps \%>\% unnest(col=hexagon) \%>\%
   ggplot(aes( x = long, y = lat, group = group, fill=state_name)) +

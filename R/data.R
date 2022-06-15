@@ -16,6 +16,7 @@
 #'   states map from \url{https://github.com/UrbanInstitute/urbnmapr}
 #' @examples
 #' library(ggplot2)
+#' library(mapproj)
 #' library(tidyr)
 #' statesmaps %>% unnest(col=hexagon) %>%
 #'   ggplot(aes( x = long, y = lat, group = group, fill=state_name)) +
