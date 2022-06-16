@@ -64,8 +64,37 @@ statesmaps <- statesmaps %>%
   )
 
 
+age10 <- get_decennial(geography = "state",
+                       variables = "P013001",
+                       year = 2010, geometry = TRUE)
+
+age10 <- get_decennial(geography = "state",
+                       variables = "P013001",
+                       year = 2010, geometry = TRUE)
+crs <- st_crs(age10)
+
+age10 <- age10 %>%
+  tigris::shift_geometry()
+
+age10 <- age10 %>% st_transform(crs = crs)
+
+library(sf)
+age10$polygon_labels <- st_centroid(age10$geometry, of_largest_polygon = TRUE)
+
+
+coords <- data.frame(state_name = age10$NAME, st_coordinates(age10$polygon_labels))
+names(coords) <- c("state_name", "long", "lat")
+
+coords_nest <- coords %>% nest(data = c(long, lat))
+names(coords_nest) <- c("state_name", "polygon_labels")
+
+statesmaps <- statesmaps %>% select(-polygon_labels)
+statesmaps <- statesmaps %>% left_join(coords_nest, by = c("state_name"))
+
+
 usethis::use_data(statesmaps, overwrite=TRUE)
 #sf::st_centroid(states_sf$geometry)
+
 
 mytheme <- theme(
   plot.caption = ggtext::element_textbox_simple(margin = ggplot2::margin(20, 0, 0, 0), size = rel(0.6), hjust = 0, color = "grey60"),
@@ -117,7 +146,10 @@ map_values %>% unnest(col=polygon) %>%
   #  geom_text (aes(label=id)) +
   theme_void () +
   scale_fill_gradient2("Median Age", midpoint=median(age10$value)) +
-  coord_map()
+  coord_map() +
+  geom_text(aes(label = state_abbv), data = map_values %>% filter(piece == 1) %>%
+              unnest(col=polygon_labels), hjust = 0.5, vjust = 0.5)
+
 
 plotly::ggplotly()
 

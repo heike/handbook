@@ -15,7 +15,8 @@ A data frame of 51 states and 8 variables:
 \item{group}{id for the corresponding polygon piece}
 \item{polygon}{list of data frames with polygon points}
 \item{hexagon}{list of data frames with hexagon points}
-\item{hexagon_labels}{list of data frame with centroids of the hexagons}
+\item{hexagon_labels}{list of data frames with centroids of the hexagons}
+\item{polygon_labels}{list of data frames with centroids of the polygons}
 }
 }
 \source{

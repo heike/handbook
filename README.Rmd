@@ -136,15 +136,16 @@ Note that only in the hexbin diagram we get to see the nation's territory with t
 ```{r}
 map_values %>% unnest(col=hexagon) %>% 
   filter(piece == 1) %>%  # not necessary, but cleaner
-  ggplot(aes( x = long, y = lat, group = group, fill=value)) +
+  ggplot(aes( x = long, y = lat, group = group, fill=cut_by_n(value, state_abbv, n=5, type="quantile"))) +
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
-  geom_text(aes(label = state_abbv, colour = I(abs(value-2.5) < 0.25)), 
+  scale_fill_nces("Quintiles of\nAverage Household Size", type="div", palette=2) +
+#  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
+  geom_text(aes(label = state_abbv, colour = I(abs(value-2.495) <= 0.015)), 
             map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
   scale_colour_manual(values=c("white", "grey50")) +
-  guides(colour = "none")
+  guides(colour = "none") 
 ```
 
 #### Animation between hex and choropleth map

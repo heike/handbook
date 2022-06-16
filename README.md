@@ -54,7 +54,7 @@ scale_fill_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7f8188a3b7e0>
+#> <bytecode: 0x7fd1a9700588>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
@@ -62,7 +62,7 @@ scale_colour_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7f8188aaa538>
+#> <bytecode: 0x7fd1a9769b30>
 #> <environment: namespace:handbook>
 ```
 
@@ -84,7 +84,7 @@ provided for linkage with data sources.
 
 ``` r
 head(statesmaps)
-#> # A tibble: 6 × 9
+#> # A tibble: 6 × 10
 #>   state_name state_abbv state_fips piece hole  group     polygon  hexagon 
 #>   <chr>      <chr>      <chr>      <dbl> <lgl> <fct>     <list>   <list>  
 #> 1 Alabama    AL         01             1 FALSE Alabama.1 <tibble> <tibble>
@@ -93,7 +93,7 @@ head(statesmaps)
 #> 4 Alabama    AL         01             4 FALSE Alabama.4 <tibble> <tibble>
 #> 5 Alaska     AK         02             1 FALSE Alaska.1  <tibble> <tibble>
 #> 6 Alaska     AK         02             2 FALSE Alaska.2  <tibble> <tibble>
-#> # … with 1 more variable: hexagon_labels <list>
+#> # … with 2 more variables: hexagon_labels <list>, polygon_labels <list>
 ```
 
 As an example to acquire data from the US Census Bureau we can use the
@@ -133,7 +133,7 @@ map_values %>% unnest(col=polygon) %>%
   #  geom_text (aes(label=id)) +
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value))
+  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value))
 ```
 
 <img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
@@ -145,19 +145,23 @@ in the 2010 census an average household size of 2.1 persons.
 ``` r
 map_values %>% unnest(col=hexagon) %>% 
   filter(piece == 1) %>%  # not necessary, but cleaner
-  ggplot(aes( x = long, y = lat, group = group, fill=value)) +
+  ggplot(aes( x = long, y = lat, group = group, fill=cut_by_n(value, state_abbv, n=5, type="quantile"))) +
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Avg. Houshold size", midpoint=median(hh10$value)) +
-  geom_text(aes(label = state_abbv, colour = I(abs(value-2.5) < 0.25)), 
+  scale_fill_nces("Quintiles of\nAverage Household Size", type="div", palette=2) +
+#  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
+  geom_text(aes(label = state_abbv, colour = I(abs(value-2.495) <= 0.015)), 
             map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
   scale_colour_manual(values=c("white", "grey50")) +
-  guides(colour = "none")
+  guides(colour = "none") 
 ```
 
 <img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 #### Animation between hex and choropleth map
+
+Animation between choropleth states map and hexbin showing the median
+age of state populations.
 
 <img src="inst/animation.gif" width="100%" />
