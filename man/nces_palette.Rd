@@ -18,4 +18,5 @@ Provide access to one of the pre-defined nces color schemes
 }
 \examples{
 nces_palette()
+nces_palette(palette = "ies_blues")(2)
 }

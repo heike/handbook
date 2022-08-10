@@ -152,6 +152,10 @@ map_values %>% unnest(col=hexagon) %>%
 
 Animation between choropleth states map and hexbin showing the median age of state populations.
 
+```{r}
+
+```
+
 ```{r, echo=FALSE}
 knitr::include_graphics("inst/animation.gif")
 ```

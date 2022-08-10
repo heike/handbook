@@ -15,6 +15,8 @@ hexmap <- "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA
 #Import hexbins
 hex <- geojson_read(hexmap, what = "sp") #where "sp" is spatial class
 
+saveRDS(hex,"hex-map.rds")
+
 #Reformat the 'google_name' field
 #This will remove the (United States) from each value
 #E.g., Vermont (United States) will be changed to Vermont
@@ -27,7 +29,9 @@ hex_fortify <- tidy(hex, region = "google_name")
 hex_one <- hex_fortify %>% group_by(id, piece, hole, group) %>% tidyr::nest() %>%
   rename(hexagon = data) %>% ungroup()
 
-
+hex_one <- hex_one %>% mutate(
+   group = sprintf("%s.%03d", id, piece)
+)
 
 # get map of states
 
@@ -36,7 +40,7 @@ theme_set(theme_minimal())
 library(urbnmapr) # For map
 
 states <- states %>% mutate(
-  group = paste(state_name, piece, sep=".")
+  group = sprintf("%s.%03d", state_name, piece)
 )
 #states_sf <- get_urbn_map(map = "states", sf = TRUE)
 
@@ -111,12 +115,13 @@ mytheme <- theme(
 library(tidycensus)
 library(tidyverse)
 census_key <- "7f784587c3918611ad6ca67188d9b269b3558dd4"
-census_api_key(census_key, install=TRUE)
+census_api_key(census_key, install=TRUE, overwrite = TRUE)
 
 age10 <- get_decennial(geography = "state",
                        variables = "P013001",
                        year = 2010)
-map_values <- statesmaps %>% left_join(age10, by = c("state_name" = "NAME"))
+# saveRDS(age10, "age10.rds")
+map_values <- statesmaps %>% left_join(age10 %>% select(-geometry,-polygon_labels), by = c("state_name" = "NAME"))
 
 # library(tidycensus)
 # library(tidyverse)
@@ -153,9 +158,12 @@ map_values %>% unnest(col=polygon) %>%
 
 plotly::ggplotly()
 
+long_map <- map_values %>%
+  pivot_longer(polygon:hexagon, values_to="data", names_to = "type") %>%
+  tidyr::unnest(col = data)
 
-p <- map_values %>% pivot_longer(polygon:hexagon, values_to="data", names_to = "type") %>%
-  tidyr::unnest(col = data) %>%
+
+p <- long_map %>%
   ggplot(aes(x = long, y = lat, group = group, fill=value)) +
   #  geom_polygon(colour="grey70") +
   geom_polygon(colour="grey70") +
@@ -163,6 +171,9 @@ p <- map_values %>% pivot_longer(polygon:hexagon, values_to="data", names_to = "
   theme_void () +
   scale_fill_gradient2("Median Age", midpoint=median(age10$value)) +
   coord_map()
+
+p <- p +
+  geom_polygon(colour="grey70", data = long_map %>% filter(piece==1))
 
 
 library(gganimate)
@@ -173,3 +184,4 @@ anim <- p +
                     state_length = 1)
 
 anim
+
