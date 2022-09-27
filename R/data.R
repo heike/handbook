@@ -36,8 +36,8 @@
 "statesmaps"
 
 
-#' List of NCES color palettes
-#'
-#' @format A list of sequential and divergent color schemes
-#' @name nces_pals
-"nces_pals"
+#' #' List of NCES color palettes
+#' #'
+#' #' @format A list of sequential and divergent color schemes
+#' #' @name nces_pals
+#' "nces_pals"

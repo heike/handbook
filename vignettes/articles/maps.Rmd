@@ -1,0 +1,91 @@
+---
+title: "maps"
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(handbook)
+```
+
+### Maps
+
+The `statesmaps` object consists of polygons and hex shapes describing each state. Additionally, state names, abbreviations and fips codes are provided for linkage with data sources.
+
+```{r maps}
+head(statesmaps)
+```
+As an example to acquire data from the US Census Bureau we can use the code below, thanks to Kyle Walker's amazing [tidycensus](https://walker-data.com/tidycensus/articles/basic-usage.html) package:
+
+```{r}
+library(tidyverse)
+library(tidycensus)
+census_key <- "place your API key here"
+#census_api_key(census_key)
+
+# H012001 encodes the average houshold size
+hh10 <- get_decennial(geography = "state",
+                       variables = "H012001",
+                       year = 2010)
+map_values <- statesmaps %>% left_join(hh10, by = c("state_name" = "NAME"))
+```
+
+Once the data is joined with the mapping information, we can draw choropleth maps or hexbin maps:
+
+```{r}
+library(mapproj)
+map_values %>% unnest(col=polygon) %>%
+  ggplot(aes( x = long, y = lat, group = group, fill=cut_by_n(value, state_abbv, n=5, type="quantile"))) +
+  geom_polygon(colour = "grey50", size=0.1) +
+  #  geom_text (aes(label=id)) +
+  theme_void () +
+  coord_map () +
+  # scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value))
+  # scale_fill_gradientn("Avg. Household size", colours = nces_palette(direction = -1)(7)[-(5)])
+  scale_fill_manual("Quintiles of\nAverage Household Size", values = nces_palette(type="div", palette=2, direction = -1)(11)[c(2,4,6,8,10)], guide = guide_legend(reverse = TRUE))
+```
+
+Note that only in the hexbin diagram we get to see the nation's territory with the smallest average household size: DC residents report in the 2010 census an average household size of 2.1 persons.
+
+```{r}
+map_values %>% unnest(col=hexagon) %>%
+  filter(piece == 1) %>%  # not necessary, but cleaner
+  ggplot(aes( x = long, y = lat, group = group, fill=cut_by_n(value, state_abbv, n=5, type="quantile"))) +
+  geom_polygon(colour = "grey50", size=0.1) +
+  theme_void () +
+  coord_map () +
+  # scale_fill_nces("Quintiles of\nAverage Household Size", type="div", palette=2) +
+  scale_fill_manual("Quintiles of\nAverage Household Size", values = nces_palette(type="div", palette=2, direction = -1)(11)[c(2,4,6,8,10)],  guide = guide_legend(reverse = TRUE),) +
+  geom_text_nces(aes(label = state_abbv, fill=cut_by_n(value, state_abbv, n=5, type="quantile")), show.legend = FALSE,
+                     # colour = I(abs(value-2.495) <= 0.015)),
+            map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels))
+  # scale_colour_manual(values=c("white", "grey50")) +
+  # guides(colour = "none")
+```
+
+#### Animation between hex and choropleth map
+
+Animation between choropleth states map and hexbin showing the median age of state populations.
+
+```{r, echo=FALSE}
+knitr::include_graphics("../inst/animation.gif")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
