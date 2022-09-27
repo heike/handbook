@@ -123,12 +123,12 @@ Once the data is joined with the mapping information, we can draw choropleth map
 ```{r}
 library(mapproj)
 map_values %>% unnest(col=polygon) %>%
-  ggplot(aes( x = long, y = lat, group = group, fill=value)) +
+  ggplot(aes( x = long, y = lat, group = group, fill=cut_by_n(value, state_abbv, n=5, type="quantile"))) +
   geom_polygon(colour = "grey50", size=0.1) +
   #  geom_text (aes(label=id)) +
   theme_void () +
   coord_map () +
-  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value))
+  scale_fill_nces("Quintiles of\nAverage Household Size", guide = guide_legend(reverse = TRUE))
 ```
 
 Note that only in the hexbin diagram we get to see the nation's territory with the smallest average household size: DC residents report in the 2010 census an average household size of 2.1 persons.
@@ -140,12 +140,9 @@ map_values %>% unnest(col=hexagon) %>%
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_nces("Quintiles of\nAverage Household Size", type="seq", palette="ies_blues", guide = guide_legend(reverse = TRUE) ) +
-#  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
-  geom_text(aes(label = state_abbv, colour = I((value-2.495) <= 0.015)), 
-            map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
-  scale_colour_manual(values=c("white", "grey20")) +
-  guides(colour = "none") 
+  scale_fill_nces("Quintiles of\nAverage Household Size", type="seq", palette="blues", guide = guide_legend(reverse = TRUE) ) +
+  geom_text_contrast(aes(label = state_abbv, fill=cut_by_n(value, state_abbv, n=5, type="quantile")), show.legend = FALSE, dark = "gray20",
+            map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels))
 ```
 
 #### Animation between hex and choropleth map
