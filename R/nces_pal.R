@@ -22,9 +22,17 @@ choose_n <- function(colors, n, type) {
 #' @export
 #' @examples
 #' nces_palette()
+#' nces_palette(palette = "ies_blues")(2)
 nces_palette <- function (type = "seq", palette = 1, direction = 1)
 {
+
   colors <- nces_pals()[[type]][[palette]]
+  if (palette == "blues" | type == "seq" && palette == 1) {
+    f <- function(n) {
+      color_classes(colors, n)
+    }
+    return(f)
+  }
 
   if (direction < 0) colors <- rev(colors) # color scheme is reversed
   function(n) {
@@ -50,8 +58,11 @@ pals_nces <- function() {
 nces_pals <- function() {
   list(
     seq = list(
-      blues = c("#00378C", "#114EA4", "#2666B9", "#3D7FCC", "#5698DC",
-                "#70B2E9", "#8ECBF4", "#B0E5FA", "#EAF9FD"),
+      blues = c("#f1f7f9", "#eaf9fd", "#d6f5fa", "#b0e5fa", "#8ecbf4", "#80beee",
+                "#70b2e9", "#5698dc", "#3d7fcc", "#3273c2", "#2666b9", "#1e5db0",
+                "#114ea4", "#00378c", "#062a6a", "#071d49"),
+      # blues = c("#00378C", "#114EA4", "#2666B9", "#3D7FCC", "#5698DC",
+      #           "#70B2E9", "#8ECBF4", "#B0E5FA", "#EAF9FD"),
       reds = c("#971B2F", "#AE3530", "#C44E31", "#D86735", "#E8813E",
                "#F59D51", "#FDB970", "#FFD69E", "#FAF3D9"),
       greens = c("#008624", "#3C9426", "#5CA22A", "#79AF33", "#93BD41",
@@ -72,4 +83,18 @@ nces_pals <- function() {
                    "#5EA46C", "#2E8271", "#205E6C", "#133D5D", "#071D49")
     )
   )
+}
+
+
+color_classes <- function(pal, n){
+  stopifnot(between(n, 2, 9))
+
+  if (n == 2) return(pal[c(4,9)])
+  if (n == 3) return(pal[c(3,7,11)])
+  if (n == 4) return(pal[c(2,5,9,13)])
+  if (n == 5) return(pal[c(2,5,8,11,14)])
+  if (n == 6) return(pal[c(2,4,7,9,12,14)])
+  if (n == 7) return(pal[c(2,4,6,8,10,13,15)])
+  if (n == 8) return(pal[c(2,4,6,8,9,12,14,16)])
+  if (n == 9) return(pal[c(1,3,4,6,8,10,13,14,16)])
 }

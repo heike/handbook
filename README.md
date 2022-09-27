@@ -54,7 +54,7 @@ scale_fill_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7fd1a9700588>
+#> <bytecode: 0x7fc6c613bc80>
 #> <environment: namespace:handbook>
 scale_colour_nces
 #> function (..., type = "seq", palette = 1, direction = 1, aesthetics = "colour") 
@@ -62,13 +62,11 @@ scale_colour_nces
 #>     ggplot2::discrete_scale(aesthetics, "nces", nces_palette(type, 
 #>         palette, direction), ...)
 #> }
-#> <bytecode: 0x7fd1a9769b30>
+#> <bytecode: 0x7fc6c61cb580>
 #> <environment: namespace:handbook>
 ```
 
 #### Sequential Color Scheme
-
-    #> Warning in choose_n(colors, n, type): chosen color palette only has 9 colors.
 
 <img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
@@ -149,11 +147,11 @@ map_values %>% unnest(col=hexagon) %>%
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_nces("Quintiles of\nAverage Household Size", type="div", palette=2) +
+  scale_fill_nces("Quintiles of\nAverage Household Size", type="seq", palette="ies_blues", guide = guide_legend(reverse = TRUE) ) +
 #  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
-  geom_text(aes(label = state_abbv, colour = I(abs(value-2.495) <= 0.015)), 
+  geom_text(aes(label = state_abbv, colour = I((value-2.495) <= 0.015)), 
             map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
-  scale_colour_manual(values=c("white", "grey50")) +
+  scale_colour_manual(values=c("white", "grey20")) +
   guides(colour = "none") 
 ```
 

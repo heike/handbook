@@ -36,8 +36,21 @@
 "statesmaps"
 
 
-#' #' List of NCES color palettes
-#' #'
-#' #' @format A list of sequential and divergent color schemes
-#' #' @name nces_pals
-#' "nces_pals"
+#' Average age of population in each US state (2010)
+#'
+#' This data is downloaded from the census API for the 2010 census.
+#' @format A data frame of 52 states and 4 variables:
+#' \describe{
+#'   \item{GEOID}{Fips id of the state.}
+#'   \item{NAME}{name of the state.}
+#'   \item{variable}{character string of the variable in the census.}
+#'   \item{value}{numeric value (in years) of the average age of a state's population.}
+#' }
+#' @source
+#' Use the tidycensus package to retrieve the age10 data set:
+#' age10 <- get_decennial(geography = "state",
+#'                        variables = "P013001",
+#'                        year = 2010)
+"age10"
+
+

@@ -56,7 +56,7 @@ scale_colour_nces
 
 ```{r echo=FALSE}
 dframe <- data.frame(
-  levels = 2:10
+  levels = 2:9
 ) 
 dframe <- dframe %>% mutate(
   values = levels %>% purrr::map(.f = sample, size = 100, replace = TRUE),
@@ -64,7 +64,7 @@ dframe <- dframe %>% mutate(
     data.frame(x = factor(x)) %>%
       ggplot(aes(x = x, fill = factor(x))) +
         geom_bar() +
-        scale_fill_nces(palette=2) +
+        scale_fill_nces() +
         theme_bw() + 
         theme(legend.position = "none") +
         ggtitle(sprintf("%d colors", length(unique(x))))
@@ -72,7 +72,7 @@ dframe <- dframe %>% mutate(
 ) 
 
 (dframe$p[[1]] + dframe$p[[2]] + dframe$p[[3]])/(dframe$p[[4]] + dframe$p[[5]] + dframe$p[[6]])/
-  (dframe$p[[7]] + dframe$p[[8]] + dframe$p[[9]]) 
+  (dframe$p[[7]] + dframe$p[[8]]) 
 ```
 
 #### Divergent Color Scheme
@@ -92,7 +92,7 @@ dframe <- dframe %>% mutate(
 ) 
 
 (dframe$p[[1]] + dframe$p[[2]] + dframe$p[[3]])/(dframe$p[[4]] + dframe$p[[5]] + dframe$p[[6]])/
-  (dframe$p[[7]] + dframe$p[[8]] + dframe$p[[9]]) 
+  (dframe$p[[7]] + dframe$p[[8]]) 
 ```
 
 
@@ -140,17 +140,21 @@ map_values %>% unnest(col=hexagon) %>%
   geom_polygon(colour = "grey50", size=0.1) + 
   theme_void () +
   coord_map () +
-  scale_fill_nces("Quintiles of\nAverage Household Size", type="div", palette=2) +
+  scale_fill_nces("Quintiles of\nAverage Household Size", type="seq", palette="ies_blues", guide = guide_legend(reverse = TRUE) ) +
 #  scale_fill_gradient2("Avg. Household size", midpoint=median(hh10$value)) +
-  geom_text(aes(label = state_abbv, colour = I(abs(value-2.495) <= 0.015)), 
+  geom_text(aes(label = state_abbv, colour = I((value-2.495) <= 0.015)), 
             map_values %>% filter(piece == 1) %>% unnest(col=hexagon_labels)) +
-  scale_colour_manual(values=c("white", "grey50")) +
+  scale_colour_manual(values=c("white", "grey20")) +
   guides(colour = "none") 
 ```
 
 #### Animation between hex and choropleth map
 
 Animation between choropleth states map and hexbin showing the median age of state populations.
+
+```{r}
+
+```
 
 ```{r, echo=FALSE}
 knitr::include_graphics("inst/animation.gif")
